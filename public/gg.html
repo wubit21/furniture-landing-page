@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Leather Sofa</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Three.js and GLTFLoader CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        /* Ensure the model canvas takes full screen */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-gray-800 to-black">
+
+    <!-- Sofa container -->
+    <div class="flex items-center justify-center h-screen w-screen">
+        <canvas id="sofaCanvas" class="w-full h-full"></canvas>
+    </div>
+
+    <script>
+        // Initialize Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // Renderer with background color set to transparent to show the Tailwind gradient
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('sofaCanvas'), antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);  // Set background to transparent
+
+        // Add lighting to make the sofa visible
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Ambient light
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // Add controls for rotating/zooming
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // Set camera initial position
+        camera.position.z = 5;
+
+        // Load the leather sofa model using GLTFLoader
+        const loader = new THREE.GLTFLoader();
+        const sofaModelUrl = 'sofa.glb'; // Replace with your sofa model URL
+
+        loader.load(sofaModelUrl, (gltf) => {
+            const sofa = gltf.scene;
+            scene.add(sofa);
+            sofa.position.set(0, -1, 0);  // Position the sofa
+            sofa.scale.set(2, 2, 2); // Scale the sofa if needed
+        }, undefined, (error) => {
+            console.error('An error occurred loading the model:', error);
+        });
+
+        // Responsive canvas resizing
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

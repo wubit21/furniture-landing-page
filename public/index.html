@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waka Furniture</title>
+
+  <!-- Google Fonts for Avenir and Raleway -->
+  <link href="https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&family=Raleway:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Tailwind Custom Config for Avenir */
+    .font-avenir {
+      font-family: 'Avenir', 'Raleway', sans-serif;
+    }
+  </style>
+</head>
+
+<body class=" font-avenir mx-auto">
+  <!-- Header Section -->
+  <header id="main-header" class=" text-white fixed top-0 left-0 w-full z-10 shadow-md transition-colors duration-300"
+    style=" background-color: rgb(30, 15, 11);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+
+        <!-- Logo and Text -->
+        <div class="flex items-center space-x-2">
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <img src="../public/images/waka.png" alt="Company Logo" class="h-14 md:h-20 lg:h-24">
+          </div>
+          <!-- Logo Text -->
+          <div class="text-white font-bold text-lg"> <!-- Single text size for all screens -->
+            Waka Furnitures
+          </div>
+        </div>
+
+        <!-- Hamburger Menu (for mobile) -->
+        <div class="block lg:hidden">
+          <button id="menu-btn" class="text-white focus:outline-none focus:ring-2 focus:ring-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="hidden lg:flex space-x-8">
+          <a href="#" class="hover:text-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown"
+            aria-label="Order">Order</a>
+          <a href="#" class="hover:text-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown"
+            aria-label="About Us">About Us</a>
+          <a href="#" class="hover:text-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown"
+            aria-label="Products">Products</a>
+          <a href="#" class="hover:text-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown"
+            aria-label="Contact Us">Contact Us</a>
+        </nav>
+      </div>
+    </div>
+
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden hidden px-2 pt-2 pb-3 space-y-1">
+      <a href="#"
+        class="block px-3 py-2 rounded-md text-base font-medium hover:bg-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown">Order</a>
+      <a href="#"
+        class="block px-3 py-2 rounded-md text-base font-medium hover:bg-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown">About
+        Us</a>
+      <a href="#"
+        class="block px-3 py-2 rounded-md text-base font-medium hover:bg-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown">Products</a>
+      <a href="#"
+        class="block px-3 py-2 rounded-md text-base font-medium hover:bg-lightbrown focus:outline-none focus:ring-2 focus:ring-lightbrown">Contact
+        Us</a>
+    </div>
+  </header>
+
+
+  <section class="mt-16">
+
+
+  </section>
+
+  <div
+    class="min-h-screen flex flex-col justify-center items-center md:flex-row md:justify-between md:items-center px-4 py-8"
+    style="background-color: rgb(30, 15, 11);">
+    <!-- Welcome Text Section -->
+    <div class="text-center md:text-left md:ml-24 md:w-1/2 md:pr-8 -mt-40">
+      <p class="text-xs sm:text-sm md:text-base lg:text-lg text-white font-mono mb-2 md:mb-4">
+        NATURAL LUXURY
+      </p>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase mb-6 md:mb-8 text-white">
+        WELCOME TO WAKA FURNITURE!
+      </h1>
+      <p class="text-xs sm:text-sm md:text-base lg:text-lg text-white">
+        Your destination for stylish and affordable furniture.
+      </p>
+    </div>
+
+    <!-- 3D Sofa Section -->
+    <!-- 3D Sofa Section with Proper Scaling and Boxed View -->
+    <div class="mt-6 md:mt-0 md:w-1/2 flex justify-center items-center"
+      style="max-width: 100%; max-height: 400px; overflow: hidden;">
+      <canvas id="sofaCanvas" class="w-full h-auto rounded-lg shadow-lg"
+        style="max-width: 600px; height: 500px;"></canvas>
+    </div>
+
+    <!-- Three.js and GLTFLoader scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+      // Initialize Three.js
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      // Renderer with background color set to transparent
+      const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('sofaCanvas'), antialias: true, alpha: true });
+      renderer.setSize(500, 400);  // Set canvas to 500x400 pixels for a boxed effect
+      renderer.setClearColor(0x000000, 0);  // Transparent background
+
+      // Add lighting to make the sofa visible
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+      const pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      // Add controls for rotating/zooming
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+      controls.enableZoom = false;
+      // Set camera initial position
+      camera.position.set(0, 40, 90);
+      camera.lookAt(0, 0, 0);
+
+      // Load the leather sofa model using GLTFLoader
+      const loader = new THREE.GLTFLoader();
+      const sofaModelUrl = 'sofa.glb'; // Replace with your sofa model URL
+
+      loader.load(sofaModelUrl, (gltf) => {
+        const sofa = gltf.scene;
+        scene.add(sofa);
+        sofa.position.set(0, 0, 0);  // Position the sofa
+        sofa.scale.set(0.7, 0.7, 0.7);  // Scale the sofa to be slightly bigger
+      }, undefined, (error) => {
+        console.error('An error occurred loading the model:', error);
+      });
+
+      // Responsive canvas resizing
+      window.addEventListener('resize', () => {
+        const width = 500;  // Fixed width
+        const height = 400; // Fixed height
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      });
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+
+
+
+
+
+  </div>
+  </section>
+
+
+  <!--order-->
+  <div class="min-h-screen ">
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-center text-3xl md:text-6xl font-extrabold " style="color: rgb(30, 15, 11);">Order Us</h1>
+        <p class="mt-4 text-center text-lg md:text-xl text-white" style="color: rgb(30, 15, 11);">Place your order here!
+        </p>
+      </div>
+    </section>
+    <!-- Grid Layout for Furniture Items -->
+
+
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto mt-12">
+
+      <!-- Example Item 1 -->
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/chair.avif" alt="Elegant wooden chair" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Elegant Wooden Chair</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 17,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta"
+            style=>
+            Order Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Example Item 2 -->
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/sofa.jpg" alt="Comfortable leather sofa" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Sofa</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 12,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta"
+            style=>
+            Order Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Example Item 3 -->
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/c.png" alt="Modern wooden table" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Modern Wooden Table</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 12,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta"
+            style=>
+            Order Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Example Item 4 -->
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/bed.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">King Size Bed</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 15,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta"
+            style=>
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/d.webp" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Cabinate</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 20,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta"
+            style=>
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/d.png" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">King Size Bed</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 10,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/chair1.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Modern Green Chair</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 30,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/shelf.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Simple Shelf</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 15,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/bathroomwall.webp" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Bathroom Wall Cabinate</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 8,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/cofeetable.jpeg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Round Coffee Table</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 10,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/coffee.webp" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Coffee Table</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 10,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/tvstand.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Tv Stand</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 10,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/tvstand.webp" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">TV Stand</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 10,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/Bathroomvanitysink.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Bathroom Vanit sink</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 15,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/dressingtable.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Dressing Table</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 25,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+      <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <img src="../public/images/dressingtable1.jpg" alt="King size wooden bed" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">Dressing Table</h2>
+          <p class="text-lg font-bold text-terracotta mb-2">Birr 25,000</p>
+          <button
+            class="w-full bg-amber-600 text-white py-2 rounded hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-terracotta">
+            Order Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--About us-->
+  <div class="min-h-screen " style="background-color: rgb(30, 15, 11);">
+    <!-- Introduction Section -->
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-center text-3xl md:text-5xl font-bold text-white">About Us</h1>
+        <p class="mt-4 text-center text-lg md:text-xl text-white">We are passionate about creating beautiful, timeless
+          furniture that brings comfort and style to your home.</p>
+      </div>
+    </section>
+
+    <!-- Mission Statement Section -->
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-center text-2xl md:text-4xl font-semibold text-white">Our Mission</h2>
+        <p class="mt-4 text-center text-md md:text-lg text-white">To craft furniture with the perfect balance of
+          aesthetics and functionality, ensuring each piece feels like home.</p>
+      </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-center text-2xl md:text-4xl font-semibold text-white">Our Story</h2>
+        <p class="mt-4 text-center text-md md:text-lg text-white">Established in 2022, we have been a family-owned
+          business dedicated to handcrafting quality furniture using sustainable materials. Over the years, we've grown
+          from a small local shop to a trusted brand known for excellence in craftsmanship and design.</p>
+      </div>
+    </section>
+
+
+
+    <!-- Team Section -->
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-center text-2xl md:text-4xl font-semibold text-white">Meet the Team</h2>
+        <div class="grid grid-cols-1 gap-8 mt-8 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Team Member -->
+          <div class="flex flex-col items-center text-center">
+            <img src="../public/images/man.jpg" alt="tewodros - CEO" class="w-32 h-32 rounded-full object-cover">
+            <h3 class="mt-4 text-xl font-bold text-white">Tewodros</h3>
+            <p class="text-white">CEO & Founder</p>
+            <p class="mt-2 text-white">With over 15 years of experience, John leads our team with a passion for
+              furniture design and a deep commitment to quality.</p>
+          </div>
+          <!-- Add more team members as needed -->
+          <div class="flex flex-col items-center text-center">
+            <img src="../public/images/man.webp" alt="muluken - HR" class="w-32 h-32 rounded-full object-cover">
+            <h3 class="mt-4 text-xl font-bold text-white">Muluken Gemechu</h3>
+            <p class="text-white">Human resource manager</p>
+            <p class="mt-2 text-white"> With a focus on talent development and employee well-being, Muluken ensures a
+              thriving workplace culture.</p>
+          </div>
+          <div class="flex flex-col items-center text-center">
+            <img src="../public/images/men3.jpg" alt="Abebe - fincance" class="w-32 h-32 rounded-full object-cover">
+            <h3 class="mt-4 text-xl font-bold text-white">Abebe Gbrekidan</h3>
+            <p class="text-white">Finance manager</p>
+            <p class="mt-2 text-white">With expertise in financial planning and analysis, Abebe ensures the company’s
+              financial health and growth.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Call-to-Action Section -->
+    <section class="px-4 py-8">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-2xl md:text-4xl font-semibold text-white">Visit Our Store</h2>
+        <p class="mt-4 text-md md:text-lg text-white">Explore our full collection and see our craftsmanship firsthand.
+          We can't wait to welcome you!</p>
+        <a href="/store"
+          class="inline-block mt-6 px-8 py-3 bg-amber-600 text-white text-lg rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-600">Explore
+          Our Collection</a>
+      </div>
+    </section>
+  </div>
+
+
+  <!--contact us-->
+
+  <div class="min-h-screen bg-cover bg-center bg-no-repeat relative"
+    style="background-image: url('../public/images/m.jpg');">
+    <!-- Background Overlay -->
+    <div class="absolute inset-0 bg-amber-700 bg-opacity-50"></div>
+
+    <div class="relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl w-full space-y-8 bg-transparent p-8 rounded-lg shadow-lg">
+        <div>
+          <h1 class="text-center text-3xl md:text-5xl font-extrabold text-white">Contact Us</h1>
+          <p class="mt-2 text-center text-sm md:text-lg text-white">We'd love to hear from you!</p>
+        </div>
+
+        <form action="#" method="POST" class="space-y-6">
+          <div class="grid grid-cols-1 gap-y-6 md:grid-cols-2 md:gap-8">
+            <!-- Name field -->
+            <div class="col-span-1">
+              <label for="name" class="block text-sm font-medium text-gray-200">Name</label>
+              <input type="text" name="name" id="name" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-950 focus:border-amber-950 sm:text-sm"
+                placeholder="Your Name">
+            </div>
+
+            <!-- Email field -->
+            <div class="col-span-1">
+              <label for="email" class="block text-sm font-medium text-gray-200">Email</label>
+              <input type="email" name="email" id="email" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-950 focus:border-amber-950 sm:text-sm"
+                placeholder="you@example.com">
+            </div>
+
+            <!-- Optional Phone field -->
+            <div class="col-span-1">
+              <label for="phone" class="block text-sm font-medium text-gray-200">Phone (Optional)</label>
+              <input type="tel" name="phone" id="phone"
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-950 focus:border-amber-950 sm:text-sm"
+                placeholder="Your Phone Number">
+            </div>
+
+            <!-- Message field -->
+            <div class="md:col-span-2">
+              <label for="message" class="block text-sm font-medium text-gray-200">Message</label>
+              <textarea id="message" name="message" rows="5" required
+                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-950 focus:border-amber-950 sm:text-sm"
+                placeholder="Your message..."></textarea>
+            </div>
+          </div>
+
+          <!-- Submit button -->
+          <div class="flex justify-center">
+            <button type="submit"
+              class="w-full md:w-auto px-6 py-3 text-white bg-amber-600 text-sm font-medium rounded-md hover:bg-amber-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-950 md:text-lg md:px-10 md:py-4">
+              Submit
+            </button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!--footer-->
+
+  <footer class=" text-white py-10" style="background-color: rgb(30, 15, 11);">
+    <div class="max-w-7xl mx-auto px-4">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0 md:space-x-12">
+        <!-- Logo Section -->
+        <div class="flex flex-col items-center md:items-start">
+          <img src="../public/images/waka.png" alt="Furniture Company Logo" class="w-32 mb-4">
+          <p class="text-center md:text-left">Quality furniture for every home.</p>
+        </div>
+        <!-- Links Section -->
+        <div class="flex flex-col items-center md:items-start">
+          <a href="#" class="hover:text-terracotta mb-2">About Us</a>
+          <a href="#" class="hover:text-terracotta mb-2">Contact Us</a>
+          <a href="#" class="hover:text-terracotta mb-2">Order</a>
+          <a href="#" class="hover:text-terracotta mb-2">Product</a>
+
+
+
+        </div>
+
+
+
+        <!-- Contact Information -->
+        <div class="flex flex-col items-center md:items-start">
+          <p><strong>Email:</strong> waka@furniture.com</p>
+          <p><strong>Phone:</strong> + 251 567 89 80</p>
+        </div>
+
+
+
+        <!-- Social Media Section -->
+        <div class="flex space-x-4 items-end">
+          <a href="#" aria-label="Visit us on TikTok" class="hover:text-terracotta">
+            <img src="../public/images/TikTok.png" alt="TikTok Icon" class="h-6 w-6">
+          </a>
+          <a href="#" aria-label="Visit us on Facebook" class="hover:text-terracotta">
+            <img src="../public/images/Facebook.png" alt="Facebook Icon" class="h-6 w-6">
+          </a>
+          <a href="#" aria-label="Visit us on Instagram" class="hover:text-terracotta">
+            <img src="../public/images/instagram.png" alt="Instagram Icon" class="h-6 w-6">
+          </a>
+          <a href="#" aria-label="Visit us on Telegram" class="hover:text-terracotta">
+            <img src="../public/images/Telegram.png" alt="Telegram Icon" class="h-6 w-6">
+          </a>
+          <a href="#" aria-label="Visit us on Telegram" class="hover:text-terracotta">
+            <img src="../public/images/Messenger.png" alt="Telegram Icon" class="h-6 w-6">
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom Section -->
+      <div class="border-t border-white mt-10 pt-4 text-center text-sm">
+        <p>&copy; 2024 Waka Furniture. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // Toggle mobile menu
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+
+</html>
